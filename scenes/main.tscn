@@ -1,0 +1,114 @@
+[gd_scene load_steps=8 format=3 uid="uid://b445jeds13to0"]
+
+[ext_resource type="Texture2D" uid="uid://csqtwciuc6lbt" path="res://sprites/Backgrounds/street-view (2).jpg" id="1_jyhfs"]
+[ext_resource type="PackedScene" uid="uid://csebvrteinvx1" path="res://scenes/fighter.tscn" id="1_o5qli"]
+[ext_resource type="Script" uid="uid://bfv1sixkvv2h6" path="res://scripts/camera_2d.gd" id="2_0wfyh"]
+[ext_resource type="Script" uid="uid://cke7n8ln2exn2" path="res://scripts/ui.gd" id="3_sugp2"]
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_jyhfs"]
+distance = 19.0
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_tbgi4"]
+normal = Vector2(1, 0)
+distance = -272.0
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_sugp2"]
+normal = Vector2(-1, 0)
+distance = -744.0
+
+[node name="Main" type="Node2D"]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(40, 216)
+scale = Vector2(1.15, 1.41756)
+texture = ExtResource("1_jyhfs")
+
+[node name="Camera2D" type="Camera2D" parent="." node_paths=PackedStringArray("fighter1", "fighter2")]
+position = Vector2(0, 300)
+script = ExtResource("2_0wfyh")
+fighter1 = NodePath("../Fighter1")
+fighter2 = NodePath("../Fighter2")
+
+[node name="Ground" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Ground"]
+position = Vector2(0, 499)
+shape = SubResource("WorldBoundaryShape2D_jyhfs")
+
+[node name="ColorRect" type="ColorRect" parent="Ground"]
+visible = false
+offset_left = -925.0
+offset_top = 474.0
+offset_right = 925.0
+offset_bottom = 524.0
+color = Color(0.172833, 0.172833, 0.172833, 1)
+
+[node name="BorderL" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BorderL"]
+position = Vector2(-224, 224)
+shape = SubResource("WorldBoundaryShape2D_tbgi4")
+
+[node name="BorderR" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BorderR"]
+position = Vector2(-192, 224)
+shape = SubResource("WorldBoundaryShape2D_sugp2")
+
+[node name="Fighter1" parent="." node_paths=PackedStringArray("opponent") instance=ExtResource("1_o5qli")]
+position = Vector2(-300, 368)
+opponent = NodePath("../Fighter2")
+
+[node name="Fighter2" parent="." node_paths=PackedStringArray("opponent") instance=ExtResource("1_o5qli")]
+position = Vector2(328, 368)
+left_action = "left_p2"
+right_action = "right_p2"
+jump_action = "jump_p2"
+attack_action = "attack_p2"
+opponent = NodePath("../Fighter1")
+
+[node name="UI" type="CanvasLayer" parent="." node_paths=PackedStringArray("fighter1", "fighter2")]
+script = ExtResource("3_sugp2")
+fighter1 = NodePath("../Fighter1")
+fighter2 = NodePath("../Fighter2")
+
+[node name="TopBar" type="Control" parent="UI"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HealthBarP1" type="ProgressBar" parent="UI/TopBar"]
+layout_mode = 0
+offset_right = 500.0
+offset_bottom = 40.0
+pivot_offset = Vector2(70, 50)
+value = 100.0
+
+[node name="HealthBarP2" type="ProgressBar" parent="UI/TopBar"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -500.0
+offset_bottom = 40.0
+grow_horizontal = 0
+pivot_offset = Vector2(-70, 50)
+value = 100.0
+
+[node name="WinnerLabel" type="Label" parent="UI/TopBar"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -11.5
+offset_right = 20.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+horizontal_alignment = 1
