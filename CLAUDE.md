@@ -51,6 +51,10 @@ Diseño maestro completo: `docs/superpowers/specs/2026-06-15-arenal-fighters-mas
   sprites en `sprites/`. Nombre de script = nombre de su escena en `snake_case`.
 - **Idioma:** código y nombres en inglés; comentarios y docs pueden ir en español.
 - **Flujo:** plan escrito siempre; TDD en determinismo y netcode; commits pequeños y descriptivos.
+- **Commits y PRs:** seguir la skill `commit-pr-style` (Conventional Commits, en inglés, sin
+  `Co-Authored-By` ni footers de generación).
+- **Equipo:** reparto de trabajo y flujo git en `docs/TEAM.md`. Pista A (sim/netcode) = RChacon05;
+  Pista B (shell/contenido) = JeffLcTec. Rama por spec + PR con review de la otra persona.
 
 ## Estado actual del código
 
