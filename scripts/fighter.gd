@@ -6,6 +6,7 @@ enum State {
 	JUMP,
 	ATTACK,
 	HIT,
+	BLOCK,
 	DEAD
 }
 var current_state = State.IDLE
@@ -28,6 +29,8 @@ var attacking: bool = false
 var stunned: bool = false
 var dead: bool = false
 var last_state: int = -1
+var blocking: bool = false
+var blockstun_timer: int = 0
 
 func _ready() -> void:
 	if fighter_data:
@@ -70,6 +73,9 @@ func update_animation():
 		State.HIT:
 			$AnimatedSprite2D.play("hit")
 
+		State.BLOCK:
+			$AnimatedSprite2D.play("idle")
+
 		State.DEAD:
 			$AnimatedSprite2D.play("death")
 
@@ -78,13 +84,20 @@ func update_state() -> void:
 		current_state = State.DEAD
 	elif hitstun_timer > 0:
 		current_state = State.HIT
+	elif blockstun_timer > 0:
+		current_state = State.BLOCK
 	elif attacking:
 		current_state = State.ATTACK
 	elif not is_on_floor():
 		current_state = State.JUMP
+	elif is_blocking_input():
+		blocking = true
+		current_state = State.BLOCK
 	elif abs(velocity.x) > 1:
+		blocking = false
 		current_state = State.WALK
 	else:
+		blocking = false
 		current_state = State.IDLE
 
 func die():
@@ -97,6 +110,9 @@ func die():
 func take_damage(amount: int, hit_hitstun: int = 15, hit_blockstun: int = 8) -> void:
 	if dead:
 		return
+	if blocking:
+		blockstun_timer = hit_blockstun
+		return
 	health -= amount
 	stunned = true
 	hitstun_timer = hit_hitstun
@@ -107,7 +123,7 @@ func take_damage(amount: int, hit_hitstun: int = 15, hit_blockstun: int = 8) -> 
 		die()
 
 func attack() -> void:
-	if attacking or hitstun_timer > 0 or dead:
+	if attacking or hitstun_timer > 0 or blockstun_timer > 0 or dead:
 		return
 	attacking = true
 	attack_timer = 0
@@ -128,6 +144,13 @@ func _on_hitbox_area_entered(area: Area2D) -> void:
 		var hs: int = move.hitstun_frames if move else 15
 		var bs: int = move.blockstun_frames if move else 8
 		fighter.take_damage(dmg, hs, bs)
+
+func is_blocking_input() -> bool:
+	if opponent == null:
+		return false
+	var dir: float = Input.get_axis(left_action, right_action)
+	var facing_right: bool = opponent.global_position.x > global_position.x
+	return (facing_right and dir < -0.5) or (not facing_right and dir > 0.5)
 
 func _physics_process(delta: float) -> void:
 	if not dead:
@@ -154,6 +177,9 @@ func _physics_process(delta: float) -> void:
 			if hitstun_timer == 0:
 				stunned = false
 
+		if blockstun_timer > 0:
+			blockstun_timer -= 1
+
 		# Add the gravity.
 		if not is_on_floor():
 			velocity += get_gravity() * delta
@@ -166,7 +192,7 @@ func _physics_process(delta: float) -> void:
 			attack()
 
 		# Get the input direction and handle the movement/deceleration.
-		if not stunned:
+		if not stunned and blockstun_timer == 0:
 			var direction: float = Input.get_axis(left_action, right_action)
 			if direction:
 				velocity.x = direction * SPEED
