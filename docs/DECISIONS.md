@@ -38,3 +38,9 @@ revierte, se agrega una nueva entrada que la supersede en vez de borrar la vieja
 - **Contexto:** Modo local vs CPU sin romper determinismo.
 - **Decisión:** IA por reglas/utility que produce los mismos comandos de input que un jugador.
 - **Consecuencias:** La simulación no distingue jugador humano de CPU; sigue siendo reproducible.
+
+## ADR-006 — Matemática de simulación en enteros (punto fijo, subpíxeles)
+- **Fecha:** 2026-06-15 · **Estado:** aceptada
+- **Contexto:** El float IEEE-754 puede divergir entre máquinas y rompería el rollback (LEY #1 regla 6).
+- **Decisión:** Posiciones, velocidades y aceleraciones en `int`, con `1 px = 1000 subunidades` (`SimConstants.SUBPIXEL`). Constantes derivadas del juego original a ticks de 60 Hz: `GRAVITY = 270`, `MOVE_SPEED = 5000`, `JUMP_VELOCITY = -8333`, `FLOOR_Y = 400000`.
+- **Consecuencias:** Determinismo garantizado en el movimiento entre máquinas. El render divide por `SUBPIXEL` para dibujar en píxeles. La aritmética con trigonometría (rotaciones complejas) queda fuera del alcance del juego, lo cual es aceptable para un fighter 2D.
