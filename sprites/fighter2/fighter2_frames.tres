@@ -1,0 +1,148 @@
+[gd_resource type="SpriteFrames" load_steps=27 flags=ResourceLocalToScene=0]
+
+[ext_resource type="Texture2D" path="res://sprites/fighter2/idle/idle_01.png" id="1_idle01"]
+[ext_resource type="Texture2D" path="res://sprites/fighter2/idle/idle_02.png" id="2_idle02"]
+[ext_resource type="Texture2D" path="res://sprites/fighter2/idle/idle_03.png" id="3_idle03"]
+[ext_resource type="Texture2D" path="res://sprites/fighter2/idle/idle_04.png" id="4_idle04"]
+[ext_resource type="Texture2D" path="res://sprites/fighter2/idle/idle_05.png" id="5_idle05"]
+[ext_resource type="Texture2D" path="res://sprites/fighter2/idle/idle_06.png" id="6_idle06"]
+[ext_resource type="Texture2D" path="res://sprites/fighter2/idle/idle_07.png" id="7_idle07"]
+[ext_resource type="Texture2D" path="res://sprites/fighter2/idle/idle_08.png" id="8_idle08"]
+[ext_resource type="Texture2D" path="res://sprites/fighter2/walk/walk_01.png" id="9_walk01"]
+[ext_resource type="Texture2D" path="res://sprites/fighter2/walk/walk_02.png" id="10_walk02"]
+[ext_resource type="Texture2D" path="res://sprites/fighter2/walk/walk_03.png" id="11_walk03"]
+[ext_resource type="Texture2D" path="res://sprites/fighter2/walk/walk_04.png" id="12_walk04"]
+[ext_resource type="Texture2D" path="res://sprites/fighter2/walk/walk_05.png" id="13_walk05"]
+[ext_resource type="Texture2D" path="res://sprites/fighter2/walk/walk_06.png" id="14_walk06"]
+[ext_resource type="Texture2D" path="res://sprites/fighter2/walk/walk_07.png" id="15_walk07"]
+[ext_resource type="Texture2D" path="res://sprites/fighter2/walk/walk_08.png" id="16_walk08"]
+[ext_resource type="Texture2D" path="res://sprites/fighter2/attack/attack_01.png" id="17_atk01"]
+[ext_resource type="Texture2D" path="res://sprites/fighter2/attack/attack_02.png" id="18_atk02"]
+[ext_resource type="Texture2D" path="res://sprites/fighter2/attack/attack_03.png" id="19_atk03"]
+[ext_resource type="Texture2D" path="res://sprites/fighter2/attack/attack_04.png" id="20_atk04"]
+[ext_resource type="Texture2D" path="res://sprites/fighter2/attack/attack_05.png" id="21_atk05"]
+[ext_resource type="Texture2D" path="res://sprites/fighter2/attack/attack_06.png" id="22_atk06"]
+[ext_resource type="Texture2D" path="res://sprites/fighter2/attack/attack_07.png" id="23_atk07"]
+[ext_resource type="Texture2D" path="res://sprites/fighter2/attack/attack_08.png" id="24_atk08"]
+[ext_resource type="Texture2D" path="res://sprites/fighter2/attack/attack_09.png" id="25_atk09"]
+[ext_resource type="Texture2D" path="res://sprites/fighter2/attack/attack_10.png" id="26_atk10"]
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("17_atk01")
+}, {
+"duration": 1.0,
+"texture": ExtResource("18_atk02")
+}, {
+"duration": 1.0,
+"texture": ExtResource("19_atk03")
+}, {
+"duration": 1.0,
+"texture": ExtResource("20_atk04")
+}, {
+"duration": 1.0,
+"texture": ExtResource("21_atk05")
+}, {
+"duration": 1.0,
+"texture": ExtResource("22_atk06")
+}, {
+"duration": 1.0,
+"texture": ExtResource("23_atk07")
+}, {
+"duration": 1.0,
+"texture": ExtResource("24_atk08")
+}, {
+"duration": 1.0,
+"texture": ExtResource("25_atk09")
+}, {
+"duration": 1.0,
+"texture": ExtResource("26_atk10")
+}],
+"loop": false,
+"name": &"attack",
+"speed": 14.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_idle01")
+}],
+"loop": true,
+"name": &"death",
+"speed": 8.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_idle01")
+}],
+"loop": false,
+"name": &"hit",
+"speed": 8.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_idle01")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_idle02")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_idle03")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_idle04")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_idle05")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_idle06")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_idle07")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_idle08")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 8.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_idle01")
+}],
+"loop": false,
+"name": &"jump",
+"speed": 8.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("9_walk01")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_walk02")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_walk03")
+}, {
+"duration": 1.0,
+"texture": ExtResource("12_walk04")
+}, {
+"duration": 1.0,
+"texture": ExtResource("13_walk05")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14_walk06")
+}, {
+"duration": 1.0,
+"texture": ExtResource("15_walk07")
+}, {
+"duration": 1.0,
+"texture": ExtResource("16_walk08")
+}],
+"loop": true,
+"name": &"walk",
+"speed": 10.0
+}]

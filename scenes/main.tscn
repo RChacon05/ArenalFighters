@@ -1,9 +1,10 @@
-[gd_scene load_steps=8 format=3 uid="uid://b445jeds13to0"]
+[gd_scene load_steps=9 format=3 uid="uid://b445jeds13to0"]
 
 [ext_resource type="Texture2D" uid="uid://csqtwciuc6lbt" path="res://sprites/Backgrounds/street-view (2).jpg" id="1_jyhfs"]
 [ext_resource type="PackedScene" uid="uid://csebvrteinvx1" path="res://scenes/fighter.tscn" id="1_o5qli"]
 [ext_resource type="Script" uid="uid://bfv1sixkvv2h6" path="res://scripts/camera_2d.gd" id="2_0wfyh"]
 [ext_resource type="Script" uid="uid://cke7n8ln2exn2" path="res://scripts/ui.gd" id="3_sugp2"]
+[ext_resource type="SpriteFrames" path="res://sprites/fighter2/fighter2_frames.tres" id="4_f2frames"]
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_jyhfs"]
 distance = 19.0
@@ -67,6 +68,11 @@ jump_action = "jump_p2"
 attack_action = "attack_p2"
 opponent = NodePath("../Fighter1")
 
+[node name="AnimatedSprite2D" parent="Fighter2"]
+scale = Vector2(0.27, 0.27)
+offset = Vector2(0, -186)
+sprite_frames = ExtResource("4_f2frames")
+
 [node name="UI" type="CanvasLayer" parent="." node_paths=PackedStringArray("fighter1", "fighter2")]
 script = ExtResource("3_sugp2")
 fighter1 = NodePath("../Fighter1")
@@ -99,16 +105,4 @@ pivot_offset = Vector2(-70, 50)
 value = 100.0
 
 [node name="WinnerLabel" type="Label" parent="UI/TopBar"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -20.0
-offset_top = -11.5
-offset_right = 20.0
-offset_bottom = 11.5
-grow_horizontal = 2
-grow_vertical = 2
-horizontal_alignment = 1
+layout_mode
