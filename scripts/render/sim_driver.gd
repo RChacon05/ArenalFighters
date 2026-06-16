@@ -1,6 +1,9 @@
 class_name SimDriver
 extends Node
 
+@export var view1_path: NodePath
+@export var view2_path: NodePath
+
 const TICK_DELTA := 1.0 / SimConstants.TICK_HZ
 
 const P1_ACTIONS := {
@@ -22,12 +25,8 @@ var _view2: FighterView
 var _accumulator := 0.0
 
 func _ready() -> void:
-	var parent := get_parent()
-	_view1 = parent.get_node("Fighter1") as FighterView
-	_view2 = parent.get_node("Fighter2") as FighterView
-	if _view1 == null or _view2 == null:
-		push_error("SimDriver: Fighter1 or Fighter2 not found as siblings")
-		return
+	_view1 = get_node(view1_path)
+	_view2 = get_node(view2_path)
 	var s := SimState.new(2)
 	s.fighters[0].pos_x = -300 * SimConstants.SUBPIXEL
 	s.fighters[0].pos_y = SimConstants.FLOOR_Y
@@ -43,8 +42,6 @@ func _read_command(actions: Dictionary) -> InputCommand:
 	return cmd
 
 func _process(delta: float) -> void:
-	if _sim == null:
-		return
 	_accumulator += delta
 	while _accumulator >= TICK_DELTA:
 		var commands := [_read_command(P1_ACTIONS), _read_command(P2_ACTIONS)]
