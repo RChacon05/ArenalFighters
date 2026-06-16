@@ -1,0 +1,56 @@
+[gd_scene format=3 uid="uid://b6wsbwspghnw4"]
+
+[ext_resource type="Script" uid="uid://cgg0cfge6b0ea" path="res://scripts/networking/network_test.gd" id="1_5tic8"]
+[ext_resource type="Script" uid="uid://ciyqcry1mtsun" path="res://scripts/networking/signaling_client.gd" id="2_wcix1"]
+[ext_resource type="Script" uid="uid://dlwwfnj45d5ht" path="res://scripts/networking/webrtc_manager.gd" id="3_suoq1"]
+
+[node name="NetworkTest" type="Node" unique_id=1005872320]
+script = ExtResource("1_5tic8")
+
+[node name="SignalingClient" type="Node" parent="." unique_id=2042430099]
+script = ExtResource("2_wcix1")
+metadata/_custom_type_script = "uid://ciyqcry1mtsun"
+
+[node name="WebRTCManager" type="Node" parent="." unique_id=2067481145]
+script = ExtResource("3_suoq1")
+signaling_client = NodePath("../SignalingClient")
+metadata/_custom_type_script = "uid://dlwwfnj45d5ht"
+
+[node name="VBox" type="VBoxContainer" parent="." unique_id=266407070]
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="StatusLabel" type="Label" parent="VBox" unique_id=614202628]
+layout_mode = 2
+text = "Not Connected
+"
+
+[node name="LogLabel" type="RichTextLabel" parent="VBox" unique_id=63797008]
+layout_mode = 2
+bbcode_enabled = true
+scroll_following = true
+
+[node name="HBox" type="HBoxContainer" parent="VBox" unique_id=1758101938]
+layout_mode = 2
+
+[node name="ConnectBtn" type="Button" parent="VBox/HBox" unique_id=301622723]
+layout_mode = 2
+text = "Connect
+"
+
+[node name="CreateRoomBtn" type="Button" parent="VBox/HBox" unique_id=2117693424]
+layout_mode = 2
+text = "Create Room"
+
+[node name="RoomCodeInput" type="LineEdit" parent="VBox/HBox" unique_id=168942949]
+layout_mode = 2
+placeholder_text = "XXXXXX"
+
+[node name="JoinRoomBtn" type="Button" parent="VBox/HBox" unique_id=1309827856]
+layout_mode = 2
+text = "Join Room
+"
+
+[connection signal="pressed" from="VBox/HBox/ConnectBtn" to="." method="_on_connect_btn_pressed"]
+[connection signal="pressed" from="VBox/HBox/CreateRoomBtn" to="." method="_on_create_room_btn_pressed"]
+[connection signal="pressed" from="VBox/HBox/JoinRoomBtn" to="." method="_on_join_room_btn_pressed"]

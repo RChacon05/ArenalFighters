@@ -1,142 +1,124 @@
-# ArenalFighters — Diseño Maestro
+# ArenalFighters — Diseño Maestro (v2)
 
-> Documento de spec maestro. Fuente de verdad de la que se derivan los 12 specs.
-> Fecha: 2026-06-15 · Motor: Godot 4.4 · Estado: aprobado para descomposición.
+> Actualizado: 2026-06-16. Pivot a MVP local 1v1.
+> El online (WebRTC, rollback, señalización) fue eliminado del scope.
+> Ver ADR-007 en `docs/DECISIONS.md` para la justificación.
 
 ---
 
 ## 1. Visión
 
-Juego de peleas 2D estilo Mortal Kombat / Street Fighter. Alcance inicial: golpes y
-combos sencillos, una sola clase de luchador parametrizada por datos, menú de inicio,
-fatalities/finishers, modo local con CPU algorítmica, y **multijugador online de costo $0**.
+Juego de peleas 2D estilo Mortal Kombat / Street Fighter.
+**MVP: local 1v1** en la misma máquina, con CPU algorítmica y un modo historia
+(a implementar cuando la narrativa esté lista).
 
-El online es la prioridad de producto, pero se construye **al final**, sobre un core de
-combate local que desde el día uno cumple las reglas que el online (rollback) exige.
+El foco es **sentirse bien de jugar**: golpes con peso, combos satisfactorios,
+finishers espectaculares y un loop de combate pulido. Sin complejidad de netcode.
 
 ## 2. Decisiones arquitectónicas (cerradas)
 
 | Tema | Decisión | Razón |
 |---|---|---|
-| Motor | Godot 4.4 (proyecto ya iniciado) | Ya existe base funcional |
-| Transporte online | WebRTC P2P + servidor de señalización en free tier | Costo $0, soportado nativo por Godot |
-| Modelo de netcode | **Rollback** sobre core determinista | Mejor sensación competitiva; exige determinismo |
-| Orden de construcción | Core local determinista → shell → online → fatalities/pulido | Depurar netcode sobre core inestable es inviable |
+| Motor | Godot 4.4 | Proyecto ya iniciado con base funcional |
+| Modo de juego | Local 1v1 (misma máquina) | MVP simple; online eliminado |
+| Online | **Eliminado del scope** | Complejidad desproporcionada al estado del proyecto |
+| Base del luchador | Extender `fighter.gd` original con mejoras incrementales | Funciona, es simple, se siente bien |
+| Física | `CharacterBody2D` + `move_and_slide()` con `delta` | Enfoque nativo de Godot, sin complicaciones |
+| Input | `Input` directo en `_physics_process` | Sin capas intermedias innecesarias |
 | Personajes | Una clase `Fighter` + recursos de datos por personaje | Reuso máximo, balance data-driven |
-| IA local | Algorítmica (reglas/utility), emite los mismos comandos de input que un jugador | Mantiene determinismo, reusa la simulación |
-| Documentación | `CLAUDE.md` raíz + `docs/` estructurada | Estándar Claude Code, carga automática por sesión |
-| Flujo de trabajo | Planes escritos siempre; tests/TDD en determinismo y netcode | Rigor medio: rápido pero seguro donde importa |
+| IA CPU | Algorítmica por reglas/utility, lee `Input` como player 2 | Simple y efectiva para modo local |
+| Modo historia | Placeholder hasta que exista la narrativa | No bloquea el MVP |
 
-## 3. ⚠️ Invariantes de determinismo (LEY #1)
+## 3. Roadmap — 8 specs, 4 fases
 
-Rollback re-simula el pasado. **La misma secuencia de inputs DEBE producir el mismo estado
-bit por bit en ambas máquinas.** Toda decisión de código se mide contra estas reglas:
+### Fase 1 — Core de combate local
+- **Spec 01 · Luchador base mejorado**
+  Refactor incremental de `fighter.gd`: frame data (startup/active/recovery en frames),
+  hitbox/hurtbox data-driven, bloqueo, hitstun, knockback, recursos `.tres` por personaje.
+  Mantiene `Input` directo y `move_and_slide()` — sin sobre-ingeniería.
 
-1. **La simulación nunca lee `Input` directamente.** Recibe un struct de comandos por frame.
-2. **Paso de tiempo fijo.** La simulación avanza en ticks fijos (p.ej. 60 Hz), nunca con
-   `delta` variable. El render puede interpolar; la simulación no.
-3. **Estado totalmente serializable.** Todo lo que afecta el resultado del combate se puede
-   guardar y restaurar (snapshot) en cualquier tick.
-4. **Sin aleatoriedad no sembrada.** Nada de `randf()`/`randi()` libres. RNG determinista con
-   seed sincronizado y avanzado dentro de la simulación.
-5. **Sin dependencias de orden no determinista.** Cuidado con iterar `Dictionary` por orden de
-   inserción, `get_children()` dependiente de timing, o señales que cambian orden de ejecución.
-6. **Matemática determinista.** Evitar acumulación de float divergente; preferir enteros o
-   punto fijo para la física del combate cuando sea práctico. Definir esto en Spec 01.
-7. **Render y simulación separados.** Animaciones, partículas, cámara y sonido **no** influyen
-   en el estado de la simulación.
+- **Spec 02 · Combos e inputs especiales**
+  Buffer de inputs (8–12 frames), motion inputs (cuarto de círculo, etc.),
+  cancelación de animaciones, cadenas de combo definidas en datos.
 
-> El `fighter.gd` actual viola 1, 2 y 3. El Spec 01 lo refactoriza antes de construir nada más.
-
-## 4. Descomposición en specs
-
-### Fase 0 — Infraestructura
-- **Spec 00 · Fundación de documentación y convenciones**
-  Entregables: `CLAUDE.md` raíz, `docs/PROGRESS.md`, `docs/LESSONS.md`, `docs/DECISIONS.md`,
-  estructura de carpetas, convenciones GDScript/escenas, plantillas de spec.
-
-### Fase 1 — Core de combate local determinista
-- **Spec 01 · Simulación determinista**
-  Paso fijo, comandos de input (struct), separación simulación/render, snapshot save/restore,
-  RNG determinista, decisión float vs punto fijo. *Base de todo el proyecto.*
-- **Spec 02 · Luchador data-driven**
-  Clase `Fighter` + recurso de datos por personaje; frame data (startup/active/recovery);
-  hitbox/hurtbox; vida; hitstun/blockstun; knockback; bloqueo.
-- **Spec 03 · Combos e inputs especiales**
-  Buffer de inputs, motion inputs (cuarto de círculo, etc.), cancels, cadenas de combo.
-- **Spec 04 · Flujo de combate**
-  Rounds, timer, KO, best-of, victoria/derrota, reinicio determinista.
+- **Spec 03 · Flujo de combate**
+  Rounds, timer, KO, best-of-3, pantalla de victoria/derrota, reinicio de ronda.
 
 ### Fase 2 — Shell del juego
-- **Spec 05 · Menús y navegación**
-  Menú de inicio, selección de modo (local / vs CPU / online), character select, opciones.
-- **Spec 06 · Oponente CPU (algorítmico)**
-  IA por reglas/utility que produce comandos de input; niveles de dificultad; sin romper
-  determinismo (la IA es parte de la simulación o produce inputs reproducibles).
+- **Spec 04 · Menús y navegación**
+  Menú de inicio, selección de modo (1v1 local / vs CPU / historia),
+  character select, opciones de audio/video.
 
-### Fase 3 — Online (rollback sobre WebRTC, costo $0)
-- **Spec 07 · Transporte WebRTC + señalización**
-  Servidor de señalización mínimo (WebSocket) en free tier (Render/Fly.io/Deno Deploy),
-  lobby, establecimiento de conexión P2P, intercambio de seed.
-- **Spec 08 · Rollback netcode**
-  Predicción de input, save/restore de estado, resimulación, input delay configurable,
-  detección de desync por checksum, manejo de reconexión. El spec más detallado.
-- **Spec 09 · Flujo online / lobby UX**
-  Conectar, mostrar ping, sync test inicial, manejo de desconexiones y abandono.
+- **Spec 05 · Oponente CPU algorítmico**
+  IA por reglas/utility con niveles de dificultad.
+  Lee estado del juego y genera inputs como si fuera player 2.
 
-### Fase 4 — Jugo y contenido
-- **Spec 10 · Fatalities / finishers**
-  Detección de input de finisher al KO, ventana de oportunidad, animaciones especiales,
-  gating por condiciones.
-- **Spec 11 · Pulido**
-  SFX, VFX, feedback de golpe (hitstop, screen shake), cámara, segundo personaje de ejemplo.
+### Fase 3 — Modo historia
+- **Spec 06 · Modo historia**
+  A implementar cuando la narrativa esté lista. Estructura: secuencia de peleas
+  con cutscenes/diálogos entre medio. Bloqueado hasta tener el guión.
+
+### Fase 4 — Jugo y pulido
+- **Spec 07 · Fatalities / finishers**
+  Detección de input al KO, ventana de oportunidad, animaciones especiales.
+
+- **Spec 08 · Pulido**
+  SFX, VFX, feedback de golpe (hitstop, screen shake), cámara dinámica,
+  segundo personaje de ejemplo.
+
+## 4. Arquitectura del luchador
+
+Basada en la estructura existente de `fighter.gd`, extendida de forma incremental:
+
+```
+scenes/
+  fighter.tscn          # CharacterBody2D — no cambia la estructura base
+  main.tscn             # Escena de combate
+scripts/
+  fighter.gd            # Clase base Fighter — se extiende en Spec 01
+data/
+  characters/
+    fighter_a.tres      # FighterData resource — stats, frame data, moves
+    fighter_b.tres
+sprites/                # Sprites y animaciones (ya existente)
+```
+
+El `fighter.gd` lee sus stats de un `FighterData` resource exportado.
+Los moves y su frame data viven en los `.tres`, no hardcodeados.
 
 ## 5. Infraestructura de documentación
 
 ```
-CLAUDE.md                     # Lo que Claude lee cada sesión: visión, invariantes, navegación
+CLAUDE.md               # Contexto de sesión: visión, convenciones, estado actual
 docs/
-  PROGRESS.md                 # Estado por spec: pendiente / en curso / hecho + notas
-  LESSONS.md                  # Errores cometidos + causa raíz + regla para no repetirlos
-  DECISIONS.md                # ADRs: decisiones con fecha y justificación
-  specs/
-    00-documentation.md
-    01-deterministic-sim.md
-    ...
-  superpowers/specs/          # Specs de diseño generados por brainstorming
+  PROGRESS.md           # Estado por spec
+  LESSONS.md            # Errores aprendidos
+  DECISIONS.md          # ADRs
+  TEAM.md               # Reparto de trabajo
+  superpowers/
+    specs/              # Docs de diseño (brainstorming)
+    plans/              # Planes de implementación
 ```
 
-- **PROGRESS.md** se actualiza al cerrar cada sesión de trabajo de un spec.
-- **LESSONS.md** se actualiza cada vez que se comete (y corrige) un error reseñable; formato:
-  `## <título corto>` + Qué pasó / Causa raíz / Regla para no repetirlo.
-- **DECISIONS.md** registra cambios de rumbo arquitectónicos.
+## 6. Skills y agentes vigentes
 
-## 6. Skills, agentes y MCPs
+**Skills activas:**
+- `session-context` — rutina de inicio/cierre de sesión.
+- `fighter-frame-data` — definir y balancear moves.
+- `godot-scene-conventions` — estructura de archivos y nodos.
+- `commit-pr-style` — formato de commits y PRs.
 
-**Skills (`.claude/skills/`)**
-- `determinism-check` — checklist anti-rollback-breakers; se invoca antes de cerrar código de simulación.
-- `fighter-frame-data` — cómo definir/balancear moves y dónde viven los datos.
-- `session-context` — rutina de inicio/cierre: leer CLAUDE.md+PROGRESS+LESSONS; actualizar al terminar.
-- `godot-scene-conventions` — nombres de nodos, ubicación de escenas/scripts/recursos, patrones Godot 4.
+**Skills archivadas (online eliminado):**
+- `determinism-check` — ya no aplica sin rollback.
 
-**Agentes (`.claude/agents/`)**
-- `replay-determinism-tester` — corre headless, reproduce inputs grabados, compara checksums por frame.
-- `netcode-desync-debugger` — aísla el frame y campo de estado que divergió en un desync.
+**Agentes archivados:**
+- `replay-determinism-tester`, `netcode-desync-debugger` — eliminados con el online.
 
-**MCPs**
-- Godot MCP (comunitario, `@coding-solo/godot-mcp`) — lanzar escenas, correr el proyecto, leer logs.
-- GitHub MCP (oficial, HTTP) — issues/PRs y despliegue del servidor de señalización.
+## 7. No-objetivos (YAGNI)
 
-## 7. Flujo de trabajo por spec
-
-1. Brainstorming corto del spec (si hace falta) → 2. Plan escrito (`writing-plans`) →
-3. Implementación (TDD en determinismo/netcode; libre en UI) →
-4. `determinism-check` si toca simulación → 5. Actualizar PROGRESS/LESSONS → 6. Commit.
-
-## 8. No-objetivos (YAGNI por ahora)
-
-- Más de ~2 personajes en v1.
-- Matchmaking con cuentas/ranking (solo lobby por código).
-- Mobile/consolas (solo desktop).
+- Online / multijugador de cualquier tipo.
+- Rollback netcode / WebRTC / servidor de señalización.
+- Más de 2 personajes en v1 del MVP.
+- Matchmaking, cuentas, ranking.
+- Mobile / consolas.
 - Tienda, cosméticos, progresión.
-- Más de 1v1.

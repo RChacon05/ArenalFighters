@@ -1,15 +1,14 @@
 # ArenalFighters — Contexto del proyecto
 
 Juego de peleas 2D (estilo Mortal Kombat / Street Fighter) en **Godot 4.4**.
-Foco de producto: **multijugador online de costo $0**. Se construye al final, sobre un core
-de combate local que desde el día uno cumple las reglas de determinismo que el online exige.
+**MVP: local 1v1** en la misma máquina. El online fue eliminado del scope (ver ADR-007).
 
 ## Al empezar cada sesión, leé esto
 
 1. Este archivo (`CLAUDE.md`).
 2. `docs/PROGRESS.md` — qué está hecho y en qué spec estamos.
 3. `docs/LESSONS.md` — errores ya cometidos. **No los repitas.**
-4. El spec activo en `docs/specs/`.
+4. El spec activo en `docs/specs/` o el plan en `docs/superpowers/plans/`.
 
 ## Al terminar cada sesión
 
@@ -17,29 +16,23 @@ de combate local que desde el día uno cumple las reglas de determinismo que el 
 - Si cometiste y corregiste un error reseñable, registralo en `docs/LESSONS.md`.
 - Si cambió una decisión de arquitectura, registrala en `docs/DECISIONS.md`.
 
-## ⚠️ LEY #1 — Determinismo (innegociable)
+## Filosofía de código
 
-Vamos a usar **rollback netcode**. Rollback re-simula el pasado, así que la misma secuencia de
-inputs DEBE producir el mismo estado **bit por bit** en ambas máquinas. Todo el código de
-simulación se mide contra estas reglas:
+El `fighter.gd` original era simple y funcionaba bien. Construimos **sobre** esa base
+de forma incremental, sin sobre-ingeniería. Reglas:
 
-1. La simulación **nunca** lee `Input` directo — recibe un struct de comandos por frame.
-2. **Paso de tiempo fijo** (60 Hz). Nunca `delta` variable en la simulación. El render interpola.
-3. Estado **totalmente serializable** (snapshot save/restore en cualquier tick).
-4. **Sin RNG no sembrado.** Nada de `randf()`/`randi()` libre; RNG determinista con seed.
-5. **Sin orden no determinista** (cuidado con `Dictionary`, timing de señales, `get_children`).
-6. **Matemática determinista** (ver decisión float vs punto fijo en Spec 01).
-7. **Render y simulación separados.** Anim/partículas/cámara/sonido no tocan el estado.
+1. **Input directo** — `Input.is_action_*` en `_physics_process` está bien. Sin capas intermedias.
+2. **Física nativa de Godot** — `move_and_slide()` con `delta`. No reinventamos la física.
+3. **Datos en recursos** — stats y frame data en archivos `.tres` por personaje, no hardcodeados.
+4. **Una clase Fighter** — parametrizada por un `FighterData` resource. Sin herencia innecesaria.
+5. **Sin complejidad prematura** — si no lo necesitamos ahora, no lo agregamos.
 
-Antes de cerrar cualquier código de simulación, invocá la skill `determinism-check`.
+## Roadmap (8 specs, 4 fases)
 
-## Roadmap (12 specs, 4 fases)
-
-- **Fase 0:** 00 documentación.
-- **Fase 1 (core local determinista):** 01 simulación · 02 luchador · 03 combos · 04 flujo de combate.
-- **Fase 2 (shell):** 05 menús · 06 CPU algorítmica.
-- **Fase 3 (online):** 07 WebRTC+señalización · 08 rollback · 09 lobby UX.
-- **Fase 4 (jugo):** 10 fatalities · 11 pulido.
+- **Fase 1 (core local):** 01 luchador base · 02 combos · 03 flujo de combate.
+- **Fase 2 (shell):** 04 menús · 05 CPU algorítmica.
+- **Fase 3 (historia):** 06 modo historia (bloqueado hasta tener el guión).
+- **Fase 4 (jugo):** 07 fatalities · 08 pulido.
 
 Diseño maestro completo: `docs/superpowers/specs/2026-06-15-arenal-fighters-master-design.md`.
 
@@ -47,17 +40,17 @@ Diseño maestro completo: `docs/superpowers/specs/2026-06-15-arenal-fighters-mas
 
 - **GDScript:** `snake_case` para variables/funciones, `PascalCase` para clases/nodos,
   `UPPER_CASE` para constantes. Tipado explícito siempre que se pueda (`var x: int = 0`).
-- **Archivos:** scripts en `scripts/`, escenas en `scenes/`, recursos de datos en `data/`,
+- **Archivos:** scripts en `scripts/`, escenas en `scenes/`, recursos en `data/`,
   sprites en `sprites/`. Nombre de script = nombre de su escena en `snake_case`.
 - **Idioma:** código y nombres en inglés; comentarios y docs pueden ir en español.
-- **Flujo:** plan escrito siempre; TDD en determinismo y netcode; commits pequeños y descriptivos.
+- **Flujo:** plan escrito siempre; commits pequeños y descriptivos.
 - **Commits y PRs:** seguir la skill `commit-pr-style` (Conventional Commits, en inglés, sin
   `Co-Authored-By` ni footers de generación).
-- **Equipo:** reparto de trabajo y flujo git en `docs/TEAM.md`. Pista A (sim/netcode) = RChacon05;
+- **Equipo:** reparto de trabajo en `docs/TEAM.md`. Pista A (combate/IA) = RChacon05;
   Pista B (shell/contenido) = JeffLcTec. Rama por spec + PR con review de la otra persona.
 
 ## Estado actual del código
 
-`scripts/fighter.gd` es la base original (input directo + `delta` variable + estado no
-serializable). **Viola la LEY #1** y será refactorizado en el Spec 01. No construir nada nuevo
-de simulación encima de él hasta ese refactor.
+`scripts/fighter.gd` — base funcional existente con máquina de estados (IDLE/WALK/JUMP/
+ATTACK/HIT/DEAD), hitbox/hurtbox, animaciones y controles para 2 jugadores. Es el punto
+de partida del Spec 01: se extiende con frame data y datos por personaje, sin reescritura total.

@@ -1,7 +1,10 @@
 ---
 name: determinism-check
-description: Use ANTES de cerrar o commitear cualquier código de simulación de combate en ArenalFighters. Verifica que el código no rompa el determinismo que el rollback netcode exige.
+description: "[ARCHIVADA — ADR-007] El online fue eliminado del scope. Esta skill ya no aplica. No invocar."
 ---
+
+> **ARCHIVADA** — El rollback netcode y el online fueron eliminados del scope en ADR-007 (2026-06-16).
+> Esta skill queda guardada solo como referencia histórica. No invocar.
 
 # determinism-check
 
