@@ -7,16 +7,8 @@ extends CanvasLayer
 @onready var bar2 = $TopBar/HealthBarP2
 @onready var winner_label = $TopBar/WinnerLabel
 
-func _process(_delta):
-
-	if fighter1.dead:
-		winner_label.text = "Jugador 2 muelto"
-
-	elif fighter2.dead:
-		winner_label.text = "Jugador 2 muelto"
-	
-	if fighter1:
-		bar1.value = fighter1.health
-
-	if fighter2:
-		bar2.value = fighter2.health
+# UI temporarily disconnected from the simulation state. The old fighter.gd
+# exposed `dead` and `health` directly; the new sim keeps that in FighterState
+# and the wiring is re-established in Spec 02/04 (health) and Spec 04 (KO).
+func _process(_delta: float) -> void:
+	pass
