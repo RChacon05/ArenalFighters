@@ -9,7 +9,7 @@ enum State {
 	BLOCK,
 	DEAD
 }
-var current_state = State.IDLE
+var current_state: State = State.IDLE
 
 @export var left_action := "left"
 @export var right_action := "right"
@@ -19,8 +19,8 @@ var current_state = State.IDLE
 @export var fighter_data: FighterData
 
 var health: int = 100
-var SPEED: float = 300.0
-var JUMP_VELOCITY: float = -500.0
+var speed: float = 300.0
+var jump_velocity: float = -500.0
 var knockback_force: float = 150.0
 var attack_timer: int = 0
 var hitstun_timer: int = 0
@@ -35,8 +35,8 @@ var blockstun_timer: int = 0
 func _ready() -> void:
 	if fighter_data:
 		health = fighter_data.max_health
-		SPEED = fighter_data.walk_speed
-		JUMP_VELOCITY = fighter_data.jump_velocity
+		speed = fighter_data.walk_speed
+		jump_velocity = fighter_data.jump_velocity
 		knockback_force = fighter_data.knockback_force
 
 func update_facing():
@@ -186,7 +186,7 @@ func _physics_process(delta: float) -> void:
 
 		# Handle jump.
 		if Input.is_action_just_pressed(jump_action) and is_on_floor() and not stunned:
-			velocity.y = JUMP_VELOCITY
+			velocity.y = jump_velocity
 
 		if Input.is_action_just_pressed(attack_action):
 			attack()
@@ -195,9 +195,9 @@ func _physics_process(delta: float) -> void:
 		if not stunned and blockstun_timer == 0:
 			var direction: float = Input.get_axis(left_action, right_action)
 			if direction:
-				velocity.x = direction * SPEED
+				velocity.x = direction * speed
 			else:
-				velocity.x = move_toward(velocity.x, 0, SPEED)
+				velocity.x = move_toward(velocity.x, 0, speed)
 
 		update_facing()
 		update_state()
