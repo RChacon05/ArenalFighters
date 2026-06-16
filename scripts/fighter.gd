@@ -24,10 +24,10 @@ var knockback_force: float = 150.0
 var attack_timer: int = 0
 var hitstun_timer: int = 0
 
-var attacking = false
-var stunned = false
-var dead = false
-var last_state = -1
+var attacking: bool = false
+var stunned: bool = false
+var dead: bool = false
+var last_state: int = -1
 
 func _ready() -> void:
 	if fighter_data:
@@ -88,7 +88,7 @@ func update_state() -> void:
 		current_state = State.IDLE
 
 func die():
-	print(name + " muelto")
+	print(name + " muerto")
 	dead = true
 	current_state = State.DEAD
 	$AnimatedSprite2D.offset.y = 200
