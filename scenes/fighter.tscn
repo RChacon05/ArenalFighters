@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://csebvrteinvx1"]
+[gd_scene format=3 uid="uid://csebvrteinvx1"]
 
 [ext_resource type="Script" uid="uid://cgj84odpipfn1" path="res://scripts/fighter.gd" id="1_a4q2m"]
 [ext_resource type="Texture2D" uid="uid://dk72qwfhcbe7l" path="res://sprites/IDLE/IDLE.png" id="2_1q4ya"]
@@ -156,43 +156,41 @@ _data = {
 &"hit_logic": SubResource("Animation_6d7ge")
 }
 
-[node name="Fighter" type="CharacterBody2D"]
+[node name="Fighter" type="CharacterBody2D" unique_id=696405433]
 script = ExtResource("1_a4q2m")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1418597049]
 position = Vector2(0, 50)
 shape = SubResource("RectangleShape2D_yyin7")
 
-[node name="ColorRect" type="ColorRect" parent="."]
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1627159135]
 visible = false
 offset_left = -25.0
 offset_right = 25.0
 offset_bottom = 100.0
 color = Color(0, 0.0235294, 1, 1)
 
-[node name="Hurtbox" type="Area2D" parent="." groups=["hurtbox"]]
+[node name="Hurtbox" type="Area2D" parent="." unique_id=2131831361 groups=["hurtbox"]]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox" unique_id=1267190647]
 position = Vector2(0, 50.5)
 shape = SubResource("RectangleShape2D_a4q2m")
 
-[node name="Hitbox" type="Area2D" parent="."]
+[node name="Hitbox" type="Area2D" parent="." unique_id=782945560]
 monitoring = false
 script = SubResource("GDScript_1q4ya")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox" unique_id=407053917]
 position = Vector2(51, 37)
 shape = SubResource("RectangleShape2D_38ety")
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1852213238]
 position = Vector2(0, 49.875)
 scale = Vector2(0.167785, 0.149404)
 sprite_frames = SubResource("SpriteFrames_38ety")
 animation = &"walk"
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-libraries = {
-&"": SubResource("AnimationLibrary_6d7ge")
-}
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=271754252]
+libraries/ = SubResource("AnimationLibrary_6d7ge")
 
 [connection signal="area_entered" from="Hitbox" to="." method="_on_hitbox_area_entered"]

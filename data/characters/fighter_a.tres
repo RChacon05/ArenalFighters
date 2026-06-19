@@ -1,0 +1,20 @@
+[gd_resource type="FighterData" load_steps=2 format=3]
+
+[sub_resource type="MoveData" id="MoveData_1"]
+move_name = "light_attack"
+startup_frames = 5
+active_frames = 3
+recovery_frames = 12
+damage = 10
+hitstun_frames = 15
+blockstun_frames = 8
+knockback = 150.0
+hitbox_offset = Vector2(50, 0)
+
+[resource]
+character_name = "Fighter A"
+max_health = 100
+walk_speed = 300.0
+jump_velocity = -500.0
+knockback_force = 150.0
+light_attack = SubResource("MoveData_1")

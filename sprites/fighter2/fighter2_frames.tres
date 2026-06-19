@@ -1,0 +1,112 @@
+[gd_resource type="SpriteFrames" format=3 uid="uid://d1dird5aeh07w"]
+
+[ext_resource type="Texture2D" uid="uid://cw8bppea36pp" path="res://sprites/fighter2/idle/idle_01.png" id="1_idle01"]
+[ext_resource type="Texture2D" uid="uid://cpq1yddummriy" path="res://sprites/fighter2/idle/idle_02.png" id="2_idle02"]
+[ext_resource type="Texture2D" uid="uid://by5t8hortx25p" path="res://sprites/fighter2/idle/idle_03.png" id="3_idle03"]
+[ext_resource type="Texture2D" uid="uid://bcdtyxbapy4id" path="res://sprites/fighter2/idle/idle_04.png" id="4_idle04"]
+[ext_resource type="Texture2D" uid="uid://cot22ul5hgero" path="res://sprites/fighter2/idle/idle_05.png" id="5_idle05"]
+[ext_resource type="Texture2D" uid="uid://bxaukdkmdesnx" path="res://sprites/fighter2/idle/idle_06.png" id="6_idle06"]
+[ext_resource type="Texture2D" uid="uid://xteyokrspp5c" path="res://sprites/fighter2/walk/walk_01.png" id="9_walk01"]
+[ext_resource type="Texture2D" uid="uid://cri03oyabeu33" path="res://sprites/fighter2/walk/walk_02.png" id="10_walk02"]
+[ext_resource type="Texture2D" uid="uid://46teet5y4g1m" path="res://sprites/fighter2/walk/walk_03.png" id="11_walk03"]
+[ext_resource type="Texture2D" uid="uid://bxfrrx2u6k74d" path="res://sprites/fighter2/walk/walk_04.png" id="12_walk04"]
+[ext_resource type="Texture2D" uid="uid://b3646uuglavtu" path="res://sprites/fighter2/walk/walk_05.png" id="13_walk05"]
+[ext_resource type="Texture2D" uid="uid://78qq600v5tkq" path="res://sprites/fighter2/walk/walk_08.png" id="16_walk08"]
+[ext_resource type="Texture2D" uid="uid://c1dy4t2kk6q3i" path="res://sprites/fighter2/attack/attack_01.png" id="17_atk01"]
+[ext_resource type="Texture2D" uid="uid://bqgm82nnwovx" path="res://sprites/fighter2/attack/attack_02.png" id="18_atk02"]
+[ext_resource type="Texture2D" uid="uid://ci26y6vsmv787" path="res://sprites/fighter2/attack/attack_03.png" id="19_atk03"]
+[ext_resource type="Texture2D" uid="uid://dh448ii0sy8oc" path="res://sprites/fighter2/attack/attack_04.png" id="20_atk04"]
+[ext_resource type="Texture2D" uid="uid://cxjmur1jn5buo" path="res://sprites/fighter2/attack/attack_05.png" id="21_atk05"]
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("17_atk01")
+}, {
+"duration": 1.0,
+"texture": ExtResource("18_atk02")
+}, {
+"duration": 1.0,
+"texture": ExtResource("19_atk03")
+}, {
+"duration": 1.0,
+"texture": ExtResource("20_atk04")
+}, {
+"duration": 3.0,
+"texture": ExtResource("21_atk05")
+}],
+"loop": false,
+"name": &"attack",
+"speed": 16.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_idle01")
+}],
+"loop": true,
+"name": &"death",
+"speed": 8.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_idle01")
+}],
+"loop": false,
+"name": &"hit",
+"speed": 8.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_idle01")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_idle02")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_idle03")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_idle04")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_idle05")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_idle06")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 8.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_idle01")
+}],
+"loop": false,
+"name": &"jump",
+"speed": 8.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("9_walk01")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_walk02")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_walk03")
+}, {
+"duration": 1.0,
+"texture": ExtResource("12_walk04")
+}, {
+"duration": 1.0,
+"texture": ExtResource("13_walk05")
+}, {
+"duration": 1.0,
+"texture": ExtResource("16_walk08")
+}],
+"loop": true,
+"name": &"walk",
+"speed": 8.0
+}]
